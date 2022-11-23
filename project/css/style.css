@@ -1,0 +1,9 @@
+#outputError {
+    color: red;
+    font-size: 15px;
+}
+#output {
+    height: 400px;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.041);
+}
