@@ -1,3 +1,6 @@
+
+
+
 'use strict';
 document.title = "vector.js";
 let canvas = document.getElementById('myCanvas');
@@ -8,13 +11,18 @@ let inputStrVector = document.getElementById('inputStrVector');
 let ctx = canvas.getContext("2d");
 let counter = 0;
 let offsetCoordinateSystem = canvas.clientWidth*0.01; 
+let arrVectors = [];
+
 btnGo.onclick = function () {
     if (!validateInput(inputStrVector.value)) {
         outputError.innerHTML = `${inputStrVector.value} could not be converted to X- and Y-Coordinates!<br>` + output.innerHTML;
     } else {
         counter++;
         output.innerHTML = `${counter} Input: ${inputStrVector.value} <br>` + output.innerHTML;
-        drawVector(ctx, canvas.clientWidth, canvas.clientHeight, offsetCoordinateSystem, translateXY(canvas.clientWidth, canvas.clientHeight,offsetCoordinateSystem,convertStrToCoordinates(inputStrVector.value)));
+        let createdVector = new Vector(ctx, canvas.clientWidth, canvas.clientHeight, offsetCoordinateSystem, translateXY(canvas.clientWidth, canvas.clientHeight,offsetCoordinateSystem,convertStrToCoordinates(inputStrVector.value)));
+        createdVector.drawVector();
+        arrVectors.push(createdVector);
+        console.log(arrVectors);
     }
 }
 
@@ -53,18 +61,36 @@ function drawCoordinateSystem (ctx, canvasW, canvasH, offsetGraph) {
     ctx.stroke();
 }
 
-function drawVector (ctx, canvasW, canvasH, offsetGraph, arrCorordinates) {
-    ctx.moveTo(offsetGraph, canvasH-offsetGraph);
-    ctx.lineTo(arrCorordinates[0],arrCorordinates[1]);
-    ctx.stroke();
-}
-
 function translateXY (canvasW, canvasH, offsetGraph, arrXYCoordinates) {   //in this coordinate-system x = 0 and y = 0 should be in the left bottom corner
     console.log(arrXYCoordinates);
     arrXYCoordinates[0] = arrXYCoordinates[0]+offsetGraph;
     arrXYCoordinates[1] = canvasH-offsetGraph-arrXYCoordinates[1];
     console.log(arrXYCoordinates);
     return arrXYCoordinates;
+}
+
+class Vector {
+  ctx;
+  canvasWidth;
+  canvasHeight;
+  offsetGraph;
+  x;
+  y;
+
+  constructor (ctx, canvasWidth, canvasHeight, offsetGraph, arrCoordinates) {
+    this.ctx = ctx;
+    this.canvasWidth = canvasWidth;
+    this.canvasHeight = canvasHeight;
+    this.offsetGraph = offsetGraph;
+    this.x = arrCoordinates[0];
+    this.y = arrCoordinates[1];
+  }
+
+  drawVector () {
+    ctx.moveTo(this.offsetGraph, this.canvasHeight-this.offsetGraph);
+    ctx.lineTo(this.x, this.y);
+    ctx.stroke();
+  }
 }
 
 //main
